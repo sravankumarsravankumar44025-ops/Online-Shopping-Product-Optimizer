@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ShopOpt - DAA Product Optimizer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+====================================================== -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        🛒 Shop<span>Opt</span>
+    </div>
+
+    <div class="nav-text">
+        DAA Hackathon Project
+    </div>
+
+</nav>
+
+
+
+<!-- =====================================================
+     HERO SECTION
+====================================================== -->
+
+<section class="hero">
+
+    <div class="hero-text">
+
+        <p class="tag">
+            ALGORITHM POWERED SHOPPING
+        </p>
+
+        <h1>
+            Smart Shopping.
+            <br>
+            <span>Maximum Value.</span>
+        </h1>
+
+        <p>
+            Find the best combination of products
+            within your budget using
+            0/1 Knapsack, Sorting and Binary Search.
+        </p>
+
+    </div>
+
+    <div class="hero-icon">
+        🛍️
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     ALGORITHM CARDS
+====================================================== -->
+
+<section class="algorithm-cards">
+
+    <div class="algorithm-card">
+
+        <div class="algorithm-icon">
+            🎯
+        </div>
+
+        <h3>0/1 Knapsack</h3>
+
+        <p>
+            Select the best products
+            without exceeding your budget.
+        </p>
+
+        <strong>O(n × B)</strong>
+
+    </div>
+
+
+    <div class="algorithm-card">
+
+        <div class="algorithm-icon">
+            📊
+        </div>
+
+        <h3>Sorting</h3>
+
+        <p>
+            Rank products by price,
+            rating or value.
+        </p>
+
+        <strong>O(n log n)</strong>
+
+    </div>
+
+
+    <div class="algorithm-card">
+
+        <div class="algorithm-icon">
+            🔎
+        </div>
+
+        <h3>Binary Search</h3>
+
+        <p>
+            Quickly find products
+            from sorted data.
+        </p>
+
+        <strong>O(log n)</strong>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     BUDGET OPTIMIZER
+====================================================== -->
+
+<section class="section">
+
+    <div class="section-title">
+
+        <p>01 — OPTIMIZATION</p>
+
+        <h2>
+            Find Your Best Product Combination
+        </h2>
+
+    </div>
+
+
+    <div class="optimizer-box">
+
+        <form method="POST">
+
+            <input type="hidden"
+                   name="action"
+                   value="optimize">
+
+
+            <label>
+                Enter your shopping budget
+            </label>
+
+
+            <div class="budget-input">
+
+                <span>₹</span>
+
+                <input
+                    type="number"
+                    name="budget"
+                    placeholder="40000"
+                    required>
+
+                <button type="submit">
+                    Optimize →
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     SELECTED PRODUCTS
+====================================================== -->
+
+{% if selected %}
+
+<section class="section">
+
+    <div class="section-title">
+
+        <p>OPTIMIZATION RESULT</p>
+
+        <h2>
+            Recommended Products
+        </h2>
+
+    </div>
+
+
+    <div class="result-stats">
+
+        <div>
+            <span>Total Cost</span>
+            <strong>₹{{ total_price }}</strong>
+        </div>
+
+        <div>
+            <span>Maximum Value</span>
+            <strong>{{ total_value }}</strong>
+        </div>
+
+        <div>
+            <span>DP Comparisons</span>
+            <strong>{{ knapsack_comparisons }}</strong>
+        </div>
+
+    </div>
+
+
+    <div class="product-grid">
+
+        {% for product in selected %}
+
+        <div class="product-card selected-card">
+
+            <div class="selected-label">
+                ✓ SELECTED
+            </div>
+
+            <img src="{{ product.image }}"
+                 alt="{{ product.name }}">
+
+            <div class="product-content">
+
+                <h3>
+                    {{ product.name }}
+                </h3>
+
+                <div class="rating">
+                    ⭐ {{ product.rating }}
+                </div>
+
+                <div class="product-info">
+
+                    <strong>
+                        ₹{{ product.price }}
+                    </strong>
+
+                    <span>
+                        Value: {{ product.value }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+
+<!-- =====================================================
+     ALL PRODUCTS
+====================================================== -->
+
+<section class="section">
+
+    <div class="section-title">
+
+        <p>02 — PRODUCT DATABASE</p>
+
+        <h2>
+            Available Products
+        </h2>
+
+    </div>
+
+
+    <div class="product-grid">
+
+        {% for product in products %}
+
+        <div class="product-card">
+
+            <img src="{{ product.image }}"
+                 alt="{{ product.name }}">
+
+            <div class="product-content">
+
+                <h3>
+                    {{ product.name }}
+                </h3>
+
+                <div class="rating">
+                    ⭐ {{ product.rating }}
+                </div>
+
+                <div class="product-info">
+
+                    <strong>
+                        ₹{{ product.price }}
+                    </strong>
+
+                    <span>
+                        Value {{ product.value }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     SORTING
+====================================================== -->
+
+<section class="section">
+
+    <div class="section-title">
+
+        <p>03 — SORTING ALGORITHM</p>
+
+        <h2>
+            Rank Products
+        </h2>
+
+    </div>
+
+
+    <div class="tool-box">
+
+        <form method="POST">
+
+            <input type="hidden"
+                   name="action"
+                   value="sort">
+
+
+            <select name="sort_by">
+
+                <option value="value">
+                    Highest Value
+                </option>
+
+                <option value="rating">
+                    Highest Rating
+                </option>
+
+                <option value="price">
+                    Lowest Price
+                </option>
+
+            </select>
+
+
+            <button type="submit">
+                Sort Products
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     BINARY SEARCH
+====================================================== -->
+
+<section class="section search-section">
+
+    <div class="section-title">
+
+        <p>04 — BINARY SEARCH</p>
+
+        <h2>
+            Find a Product Quickly
+        </h2>
+
+    </div>
+
+
+    <div class="tool-box">
+
+        <form method="POST">
+
+            <input type="hidden"
+                   name="action"
+                   value="search">
+
+
+            <input
+                type="text"
+                name="search"
+                placeholder="Example: Laptop"
+                required>
+
+
+            <button type="submit">
+                🔎 Search
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% if search_result %}
+
+    <div class="search-result">
+
+        <img src="{{ search_result.image }}"
+             alt="{{ search_result.name }}">
+
+        <div>
+
+            <h3>
+                {{ search_result.name }}
+            </h3>
+
+            <p>
+                Price:
+                <strong>
+                    ₹{{ search_result.price }}
+                </strong>
+            </p>
+
+            <p>
+                Rating:
+                ⭐ {{ search_result.rating }}
+            </p>
+
+            <p>
+                Value:
+                {{ search_result.value }}
+            </p>
+
+            <strong>
+                Binary Search Comparisons:
+                {{ search_comparisons }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="steps">
+
+        <h3>
+            🔍 Search Steps
+        </h3>
+
+        {% for step in search_steps %}
+
+        <p>
+            {{ step }}
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+
+    {% if message %}
+
+    <div class="error-message">
+
+        {{ message }}
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+
+<!-- =====================================================
+     ALGORITHM EXPLANATION
+====================================================== -->
+
+<section class="section explanation">
+
+    <div class="section-title">
+
+        <p>05 — HOW IT WORKS</p>
+
+        <h2>
+            Algorithm Decision Process
+        </h2>
+
+    </div>
+
+
+    <div class="process">
+
+        <div>
+            <span>01</span>
+            <h3>Input</h3>
+            <p>
+                User enters budget and
+                product requirements.
+            </p>
+        </div>
+
+
+        <div>
+            <span>02</span>
+            <h3>Sort</h3>
+            <p>
+                Products are organized
+                for efficient searching.
+            </p>
+        </div>
+
+
+        <div>
+            <span>03</span>
+            <h3>Optimize</h3>
+            <p>
+                0/1 Knapsack calculates
+                the maximum possible value.
+            </p>
+        </div>
+
+
+        <div>
+            <span>04</span>
+            <h3>Explain</h3>
+            <p>
+                The system displays selected
+                products and algorithm steps.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<footer>
+
+    <h3>
+        🛒 ShopOpt
+    </h3>
+
+    <p>
+        Online Shopping Product Optimizer
+        | DAA Hackathon
+    </p>
+
+    <p>
+        0/1 Knapsack • Sorting • Binary Search
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>
